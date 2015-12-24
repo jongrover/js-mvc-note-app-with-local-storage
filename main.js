@@ -1,79 +1,103 @@
 "use strict";
 
-// var app = app || {};
-
-// app.main = (function(){
+var app = (function() {
 
   // Collection
+
   var notes = notes || [];
 
   // Utility Methods
+
   function saveState() {
     localStorage.setItem('notes', JSON.stringify(notes));
   }
 
   function loadState() {
-    notes = JSON.parse(localStorage.getItem('notes'));
+    return JSON.parse(localStorage.getItem('notes'));
   }
 
   function clearState() {
-    localStorage.clear('notes');
+    localStorage.clear();
   }
 
-  function buildModels() {
-    for (var i = 0; i < notes.length; i++) {
-      var note = new Note(notes[i].text);
-    }
-  }
-
-  function initialize() {
+  function init() {
     if ('notes' in localStorage && localStorage.getItem('notes').length > 0) {
-      loadState();
-      buildModels();
+      var data = loadState();
+      for (var i = 0; i < data.length; i++) {
+        var note = new Note(data[i].text);
+        if (data[i].liked) {
+          note.like();
+        }
+      }
+    } else {
+      console.log('There are no saved notes.');
     }
+    new NoteView().render();
   }
 
-  // Model
+  // Models
+
   function Note(text) {
     this.text = text;
     this.liked = false;
-    notes.push(this);`
-    //saveState();
+    notes.push(this);
+    saveState();
   }
   Note.prototype.like = function () {
     this.liked = !this.liked;
-    return this;
+    saveState();
   };
   Note.prototype.update = function (text) {
     this.text = text;
     saveState();
-    return this;
   };
   Note.prototype.destroy = function () {
     var index = notes.indexOf(this);
     notes.splice(index, 1);
     saveState();
-    return this;
   };
 
-  // View
-  // function NoteView(note, ele) {
-  //   this.note = note;
-  //   this.ele = ele;
-  // }
-  // NoteView.prototype.render = function () {
+  // Views
 
-  // };
+  function NoteView() {
+    this.listen();
+  }
+  NoteView.prototype.render = function () {
+    $('#note-list').empty();
+    for(var i = 0; i < notes.length; i++) {
+      $('#note-list').append('<p data-id="'+i+'">'+notes[i].text+' <a class="destroy" href="#">x</a></p>');
+    }
+  };
+  NoteView.prototype.createNote = function () {
+    var txt = $('#note-text').val(),
+        note = new Note(txt);
+    $('#note-text').val('');
+    this.render();
+  }
+  NoteView.prototype.listen = function () {
+    var self = this;
 
-  // public app API
+    $('#create-note').click(function() {
+      self.createNote();
+    });
 
-//   return {
-//     init: initialize
-//   };
+    $('#note-list').on('click', '.destroy', function (event) {
+      event.preventDefault();
+      var id = $(this).parent().data('id'),
+          note = notes[id];
+      note.destroy();
+      self.render();
+    });
+  };
 
-// })();
+  // Public API
 
+  return {
+    init: init
+  };
+
+})();
 
 $(function(){
-  //initialize();
+  app.init();
 });
