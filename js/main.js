@@ -65,13 +65,7 @@ var app = (function() {
   NoteView.prototype.render = function () {
     $('#note-list').empty();
     for(var i = 0; i < notes.length; i++) {
-      if (notes[i].liked) {
-        var heart = '<span class="icon icon-heart red"></span>';
-      } else {
-        var heart = '<span class="icon icon-heart"></span>';
-      }
-      var ele = $('<p data-id="'+i+'">'+notes[i].text+' <a class="destroy" href="#"><span class="icon icon-cross"></span></a> | <a class="like" href="#">'+heart+'</a></p>');
-      $(ele).appendTo('#note-list');
+      $('#note-list').append('<p data-id="'+i+'">'+notes[i].text+' <a class="destroy" href="#">x</a></p>');
     }
   };
   NoteView.prototype.createNote = function () {
