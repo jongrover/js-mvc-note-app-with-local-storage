@@ -6,10 +6,14 @@ var app = (function() {
 
   var notes = notes || [];
 
+  var noteView,
+      noteController;
+
   // Utility Methods
 
   function saveState() {
     localStorage.setItem('notes', JSON.stringify(notes));
+    noteView.render();
   }
 
   function loadState() {
@@ -21,6 +25,9 @@ var app = (function() {
   }
 
   function init() {
+    noteView = new NoteView();
+    noteController = new NoteController();
+
     if ('notes' in localStorage && localStorage.getItem('notes').length > 0) {
       var data = loadState();
       for (var i = 0; i < data.length; i++) {
@@ -32,7 +39,6 @@ var app = (function() {
     } else {
       console.log('There are no saved notes.');
     }
-    new NoteView().render();
   }
 
   // Models
@@ -69,10 +75,9 @@ var app = (function() {
     }
   };
   NoteView.prototype.createNote = function () {
-    var txt = $('#note-text').val(),
-        note = new Note(txt);
+    var text = $('#note-text').val();
     $('#note-text').val('');
-    this.render();
+    noteController.new(text);
   }
   NoteView.prototype.listen = function () {
     var self = this;
@@ -83,11 +88,21 @@ var app = (function() {
 
     $('#note-list').on('click', '.destroy', function (event) {
       event.preventDefault();
-      var id = $(this).parent().data('id'),
-          note = notes[id];
-      note.destroy();
-      self.render();
+      var id = $(this).parent().data('id');
+      noteController.destroy(id);
     });
+  };
+
+  // Controller
+
+  function NoteController() {
+  }
+  NoteController.prototype.new = function (text) {
+    var note = new Note(text);
+  }
+  NoteController.prototype.destroy = function (id) {
+    var note = notes[id];
+    note.destroy();
   };
 
   // Public API
