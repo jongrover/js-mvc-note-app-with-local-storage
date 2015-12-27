@@ -9,7 +9,8 @@ var app = (function() {
       noteController;
 
   function saveState() {
-    return localStorage.setItem('notes', JSON.stringify(notes));
+    localStorage.setItem('notes', JSON.stringify(notes));
+    return true;
   }
 
   function loadState() {
@@ -44,26 +45,26 @@ var app = (function() {
     this.liked = false;
     notes.push(this);
     if (saveState()) {
-      noteController.updateView();
+      noteController.refreshView();
     }
   }
   Note.prototype.like = function () {
     this.liked = !this.liked;
     if (saveState()) {
-      noteController.updateView();
+      noteController.refreshView();
     }
   };
   Note.prototype.update = function (text) {
     this.text = text;
     if (saveState()) {
-      noteController.updateView();
+      noteController.refreshView();
     }
   };
   Note.prototype.destroy = function () {
     var index = notes.indexOf(this);
     notes.splice(index, 1);
     if (saveState()) {
-      noteController.updateView();
+      noteController.refreshView();
     }
   };
 
@@ -120,7 +121,7 @@ var app = (function() {
     var note = notes[id];
     note.destroy();
   };
-  NoteController.prototype.updateView = function () {
+  NoteController.prototype.refreshView = function () {
     noteView.render();
   }
 
