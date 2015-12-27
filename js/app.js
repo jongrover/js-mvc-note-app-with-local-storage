@@ -21,7 +21,7 @@ var app = (function() {
     localStorage.clear();
   }
 
-  function init() {
+  function initialize() {
     noteView = new NoteView();
     noteController = new NoteController();
     if ('notes' in localStorage && localStorage.getItem('notes').length > 0) {
@@ -127,11 +127,11 @@ var app = (function() {
   // Public API
 
   return {
-    init: init
+    init: initialize
   };
 
 })();
 
 $(function () {
-  app.init();  // bootstrap app.
+  app.init();  // start app.
 });
