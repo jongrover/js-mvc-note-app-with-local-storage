@@ -38,7 +38,7 @@ var app = (function() {
     }
   }
 
-  // Models
+  // Model
 
   function Note(text) {
     this.text = text;
@@ -60,7 +60,7 @@ var app = (function() {
     saveState();
   };
 
-  // Views
+  // View
 
   function NoteView() {
     this.listen();
@@ -103,7 +103,7 @@ var app = (function() {
   }
   NoteController.prototype.new = function (text) {
     var note = new Note(text);
-  }
+  };
   NoteController.prototype.destroy = function (id) {
     var note = notes[id];
     note.destroy();
