@@ -2,14 +2,11 @@
 
 var app = (function() {
 
-  // Collection
+  // Utilities
 
-  var notes = notes || [];
-
-  var noteView,
+  var notes = [], // Collection
+      noteView,
       noteController;
-
-  // Utility Methods
 
   function saveState() {
     localStorage.setItem('notes', JSON.stringify(notes));
@@ -71,25 +68,32 @@ var app = (function() {
   NoteView.prototype.render = function () {
     $('#note-list').empty();
     for(var i = 0; i < notes.length; i++) {
-      $('#note-list').append('<p data-id="'+i+'">'+notes[i].text+' <a class="destroy" href="#">x</a></p>');
+      if (notes[i].liked) {
+        var heart = '<span class="icon icon-heart red"></span>';
+      } else {
+        var heart = '<span class="icon icon-heart"></span>';
+      }
+      $('#note-list').append('<p class="note" data-id="'+i+'">'+notes[i].text+'<br><a class="like" href="#">'+heart+'</a> <a class="destroy" href="#"><span class="icon icon-cross"></span></a></p>');
     }
   };
-  NoteView.prototype.createNote = function () {
-    var text = $('#note-text').val();
-    $('#note-text').val('');
-    noteController.new(text);
-  }
   NoteView.prototype.listen = function () {
-    var self = this;
 
     $('#create-note').click(function() {
-      self.createNote();
+      var text = $('#note-text').val();
+      $('#note-text').val('');
+      noteController.new(text);;
     });
 
     $('#note-list').on('click', '.destroy', function (event) {
       event.preventDefault();
-      var id = $(this).parent().data('id');
+      var id = $(this).parent('.note').data('id');
       noteController.destroy(id);
+    });
+
+    $('#note-list').on('click', '.like', function (event) {
+      event.preventDefault();
+      var id = $(this).parent('.note').data('id');
+      noteController.like(id);
     });
   };
 
@@ -104,6 +108,10 @@ var app = (function() {
     var note = notes[id];
     note.destroy();
   };
+  NoteController.prototype.like = function (id) {
+    var note = notes[id];
+    note.like();
+  };
 
   // Public API
 
@@ -114,5 +122,5 @@ var app = (function() {
 })();
 
 $(function () {
-  app.init();
+  app.init();  // bootstrap app.
 });
