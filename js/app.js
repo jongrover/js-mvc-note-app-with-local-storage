@@ -9,8 +9,7 @@ var app = (function() {
       noteController;
 
   function saveState() {
-    localStorage.setItem('notes', JSON.stringify(notes));
-    noteView.render();
+    return localStorage.setItem('notes', JSON.stringify(notes));
   }
 
   function loadState() {
@@ -44,20 +43,28 @@ var app = (function() {
     this.text = text;
     this.liked = false;
     notes.push(this);
-    saveState();
+    if (saveState()) {
+      noteController.updateView();
+    }
   }
   Note.prototype.like = function () {
     this.liked = !this.liked;
-    saveState();
+    if (saveState()) {
+      noteController.updateView();
+    }
   };
   Note.prototype.update = function (text) {
     this.text = text;
-    saveState();
+    if (saveState()) {
+      noteController.updateView();
+    }
   };
   Note.prototype.destroy = function () {
     var index = notes.indexOf(this);
     notes.splice(index, 1);
-    saveState();
+    if (saveState()) {
+      noteController.updateView();
+    }
   };
 
   // View
@@ -85,16 +92,16 @@ var app = (function() {
       noteController.new(text);
     });
 
-    $('#note-list').on('click', '.destroy', function (event) {
-      event.preventDefault();
-      var id = $(this).parent('.note').data('id');
-      noteController.destroy(id);
-    });
-
     $('#note-list').on('click', '.like', function (event) {
       event.preventDefault();
       var id = $(this).parent('.note').data('id');
       noteController.like(id);
+    });
+
+    $('#note-list').on('click', '.destroy', function (event) {
+      event.preventDefault();
+      var id = $(this).parent('.note').data('id');
+      noteController.destroy(id);
     });
   };
 
@@ -105,14 +112,17 @@ var app = (function() {
   NoteController.prototype.new = function (text) {
     var note = new Note(text);
   };
-  NoteController.prototype.destroy = function (id) {
-    var note = notes[id];
-    note.destroy();
-  };
   NoteController.prototype.like = function (id) {
     var note = notes[id];
     note.like();
   };
+  NoteController.prototype.destroy = function (id) {
+    var note = notes[id];
+    note.destroy();
+  };
+  NoteController.prototype.updateView = function () {
+    noteView.render();
+  }
 
   // Public API
 
