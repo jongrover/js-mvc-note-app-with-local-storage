@@ -78,10 +78,11 @@ var app = (function() {
   };
   NoteView.prototype.listen = function () {
 
-    $('#create-note').click(function() {
+    $('#create-note').submit(function(event) {
+      event.preventDefault();
       var text = $('#note-text').val();
       $('#note-text').val('');
-      noteController.new(text);;
+      noteController.new(text);
     });
 
     $('#note-list').on('click', '.destroy', function (event) {
