@@ -24,7 +24,6 @@ var app = (function() {
   function init() {
     noteView = new NoteView();
     noteController = new NoteController();
-
     if ('notes' in localStorage && localStorage.getItem('notes').length > 0) {
       var data = loadState();
       for (var i = 0; i < data.length; i++) {
