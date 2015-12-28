@@ -83,7 +83,7 @@ var app = (function() {
       } else {
         var heart = '<span class="icon icon-heart"></span>';
       }
-      $('#note-list').append('<p class="note" data-id="'+i+'">'+notes[i].text+'<br>votes: '+notes[i].votes+'<br><a class="like" href="#">'+heart+'</a> <a class="upvote" href="#"><span class="icon icon-arrow-up"></span></a> <a class="downvote" href="#"><span class="icon icon-arrow-down"></span></a> <a class="destroy" href="#"><span class="icon icon-cross"></span></a></p>');
+      $('#note-list').append('<p class="note" data-id="'+i+'">'+notes[i].text+'<br>votes: '+notes[i].votes+' <a class="upvote" href="#"><span class="icon icon-arrow-up"></span></a> <a class="downvote" href="#"><span class="icon icon-arrow-down"></span></a><br><a class="like" href="#">'+heart+'</a> <a class="destroy" href="#"><span class="icon icon-cross"></span></a></p>');
     }
   };
   NoteView.prototype.listen = function () {
