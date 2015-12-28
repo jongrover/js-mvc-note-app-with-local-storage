@@ -28,10 +28,10 @@ var app = (function() {
       var data = loadState();
       for (var i = 0; i < data.length; i++) {
         var note = new Note(data[i].text);
+        note.votes = data[i].votes;
         if (data[i].liked) {
           note.like();
         }
-        note.votes = data[i].votes;
       }
     } else {
       console.log('There are no saved notes.');
