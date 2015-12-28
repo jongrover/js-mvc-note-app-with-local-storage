@@ -33,6 +33,14 @@
     content: "\e9da";
 }
 
+.icon-arrow-up:before {
+    content: "\ea32";
+}
+
+.icon-arrow-down:before {
+    content: "\ea36";
+}
+
 .icon-cross:before {
     content: "\ea0f";
 }

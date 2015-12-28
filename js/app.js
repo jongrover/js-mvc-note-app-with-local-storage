@@ -42,29 +42,31 @@ var app = (function() {
   function Note(text) {
     this.text = text;
     this.liked = false;
+    this.votes = 0;
     notes.push(this);
-    if (saveState()) {
-      noteController.refreshView();
-    }
+    this.save();
   }
-  Note.prototype.like = function () {
-    this.liked = !this.liked;
+  Note.prototype.save = function () {
     if (saveState()) {
-      noteController.refreshView();
+      noteController.loadView();
     }
   };
-  Note.prototype.update = function (text) {
-    this.text = text;
-    if (saveState()) {
-      noteController.refreshView();
-    }
+  Note.prototype.like = function () {
+    this.liked = !this.liked;
+    this.save();
+  };
+  Note.prototype.upVote = function () {
+    this.votes += 1;
+    this.save();
+  };
+  Note.prototype.downVote = function () {
+    this.votes -= 1;
+    this.save();
   };
   Note.prototype.destroy = function () {
     var index = notes.indexOf(this);
     notes.splice(index, 1);
-    if (saveState()) {
-      noteController.refreshView();
-    }
+    this.save();
   };
 
   // View
@@ -80,7 +82,7 @@ var app = (function() {
       } else {
         var heart = '<span class="icon icon-heart"></span>';
       }
-      $('#note-list').append('<p class="note" data-id="'+i+'">'+notes[i].text+'<br><a class="like" href="#">'+heart+'</a> <a class="destroy" href="#"><span class="icon icon-cross"></span></a></p>');
+      $('#note-list').append('<p class="note" data-id="'+i+'">'+notes[i].text+' '+notes[i].votes+'<br><a class="like" href="#">'+heart+'</a> <a class="upvote" href="#"><span class="icon icon-arrow-up"></span></a>  <a class="downvote" href="#"><span class="icon icon-arrow-down"></span></a> <a class="destroy" href="#"><span class="icon icon-cross"></span></a></p>');
     }
   };
   NoteView.prototype.listen = function () {
@@ -96,6 +98,18 @@ var app = (function() {
       event.preventDefault();
       var id = $(this).parent('.note').data('id');
       noteController.like(id);
+    });
+
+    $('#note-list').on('click', '.upvote', function (event) {
+      event.preventDefault();
+      var id = $(this).parent('.note').data('id');
+      noteController.upVote(id);
+    });
+
+    $('#note-list').on('click', '.downvote', function (event) {
+      event.preventDefault();
+      var id = $(this).parent('.note').data('id');
+      noteController.downVote(id);
     });
 
     $('#note-list').on('click', '.destroy', function (event) {
@@ -116,11 +130,19 @@ var app = (function() {
     var note = notes[id];
     note.like();
   };
+  NoteController.prototype.upVote = function (id) {
+    var note = notes[id];
+    note.upVote();
+  };
+  NoteController.prototype.downVote = function (id) {
+    var note = notes[id];
+    note.downVote();
+  };
   NoteController.prototype.destroy = function (id) {
     var note = notes[id];
     note.destroy();
   };
-  NoteController.prototype.refreshView = function () {
+  NoteController.prototype.loadView = function () {
     noteView.render();
   }
 
