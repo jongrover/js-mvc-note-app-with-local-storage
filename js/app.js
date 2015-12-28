@@ -31,6 +31,7 @@ var app = (function() {
         if (data[i].liked) {
           note.like();
         }
+        note.votes = data[i].votes;
       }
     } else {
       console.log('There are no saved notes.');
