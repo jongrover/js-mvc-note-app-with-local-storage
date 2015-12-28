@@ -81,6 +81,9 @@ var app = (function() {
   }
   NoteView.prototype.render = function () {
     $('#note-list').empty();
+    notes.sort(function(a, b) {
+        return b.votes -  a.votes;
+    });
     for(var i = 0; i < notes.length; i++) {
       if (notes[i].liked) {
         var heart = '<span class="icon icon-heart red"></span>';
