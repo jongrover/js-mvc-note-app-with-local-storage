@@ -28,7 +28,7 @@ var app = (function() {
       var data = loadState();
       for (var i = 0; i < data.length; i++) {
         var note = new Note(data[i].text);
-        note.votes = data[i].votes;
+        note.setVotes(data[i].votes);
         if (data[i].liked) {
           note.like();
         }
@@ -54,6 +54,10 @@ var app = (function() {
   };
   Note.prototype.like = function () {
     this.liked = !this.liked;
+    this.save();
+  };
+  Note.prototype.setVotes = function (votes) {
+    this.votes = votes;
     this.save();
   };
   Note.prototype.upVote = function () {
